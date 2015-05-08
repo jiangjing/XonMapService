@@ -63,6 +63,8 @@ class Post {
         def map = [:]
         map.id = id
         map.title = title
+        map.latitude = latitude
+        map.longitude = longitude
         map.tagName = tag.name
         map.authorEmail = author.email
         map.images = images? images*.map : []
