@@ -2,6 +2,7 @@ file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework.bo
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-actuator/1.2.3.RELEASE/e4cf4c22717f7e235909088d44eb2cea5a96de37/spring-boot-starter-actuator-1.2.3.RELEASE.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-autoconfigure/1.2.3.RELEASE/11175f217ac34bdacd6282cd44310f211121e270/spring-boot-autoconfigure-1.2.3.RELEASE.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-tomcat/1.2.3.RELEASE/32de443f4e43ceee62c3e1e855fee076fec546b3/spring-boot-starter-tomcat-1.2.3.RELEASE.jar
+file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-security/1.2.3.RELEASE/14d951cb574fbab8d232bca2926f8653d9c6609/spring-boot-starter-security-1.2.3.RELEASE.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-boot/3.0.1/e06a54652e3f3ed47ee9a3205227f89a48d4833e/grails-web-boot-3.0.1.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.grails.plugins/hibernate/4.3.8.0/315d9205dc174b125e3dbee7b651ca18ae30cc16/hibernate-4.3.8.0.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.grails.plugins/cache/3.0.1/7a360b62877f81907d9aa6f76b8019912d3a2031/cache-3.0.1.jar
@@ -25,6 +26,13 @@ file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.apache.tomcat.embe
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-el/8.0.20/8050b326d0ee31ba91b06e420b57efe77a6f0516/tomcat-embed-el-8.0.20.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-logging-juli/8.0.20/234ee053b3dbd4bca2fc221a99d4f7d292d33e0b/tomcat-embed-logging-juli-8.0.20.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-websocket/8.0.20/b4914491d1baa90958e5c951bec7140e65874f3/tomcat-embed-websocket-8.0.20.jar
+file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/4.1.6.RELEASE/ce2d409d470948f11fad41ffdf37dcff4d28cd7c/spring-beans-4.1.6.RELEASE.jar
+file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context/4.1.6.RELEASE/15f0b22bf89ed468badbc4eec759af2b916d33e4/spring-context-4.1.6.RELEASE.jar
+file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-expression/4.1.6.RELEASE/8bf70887c2c883a6f6e552dbe46eec35c07adf6a/spring-expression-4.1.6.RELEASE.jar
+file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-web/4.1.6.RELEASE/960101b25d0ec6f45d550bf92c00de8c6a584e6a/spring-web-4.1.6.RELEASE.jar
+file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework.security/spring-security-config/3.2.7.RELEASE/36ded839a3f90b268c2b708a5a92a50aa0412223/spring-security-config-3.2.7.RELEASE.jar
+file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework.security/spring-security-web/3.2.7.RELEASE/3170f54765d6d9f99cf2d4ba7f25698d1026cf6f/spring-security-web-3.2.7.RELEASE.jar
+file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-aop/4.1.6.RELEASE/686c13ba57d9423dede9c5d580dcadc5c67a2761/spring-aop-4.1.6.RELEASE.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.grails/grails-bootstrap/3.0.1/d044acbb9d31186e30768a500f810aa5d1d87609/grails-bootstrap-3.0.1.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-rest/3.0.1/6fb214d650b46b5a5da4103a93c5a7ac837161ec/grails-plugin-rest-3.0.1.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-databinding/3.0.1/fcd22f98987dbd8a2f634348b7e66a251c0140ef/grails-plugin-databinding-3.0.1.jar
@@ -65,7 +73,8 @@ file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/net.sourceforge.htmlun
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.3.4/a9a1fef2faefed639ee0d0fba5b3b8e4eb2ff2d8/httpclient-4.3.4.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.1.3/e3c02049f2dbbc764681b40094ecf0dcbc99b157/logback-core-1.1.3.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.4.5/c69c0cb613128c69d84a6a0304ddb9fce82e8242/jackson-databind-2.4.5.jar
-file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-context/4.1.6.RELEASE/15f0b22bf89ed468badbc4eec759af2b916d33e4/spring-context-4.1.6.RELEASE.jar
+file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/aopalliance/aopalliance/1.0/235ba8b489512805ac13a8f9ea77a1ca5ebe3e8/aopalliance-1.0.jar
+file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework.security/spring-security-core/3.2.7.RELEASE/50c170701f0cc9a99d14a50a7a97ff0c651bab66/spring-security-core-3.2.7.RELEASE.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-xml/2.4.3/a31a3b90246936d0f72b9055a975e5058b9f5648/groovy-xml-2.4.3.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.grails/grails-web/3.0.1/b1928afb59ee26289a71b61c84dc4be85e543252/grails-web-3.0.1.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.grails/grails-plugin-datasource/3.0.1/a652badf49b77595f876ec4f21ae0efb091b6a56/grails-plugin-datasource-3.0.1.jar
@@ -114,9 +123,6 @@ file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/net.sourceforge.csspar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-websocket/8.1.15.v20140411/296f3a0d556c55f0b386c1af2a4415d22a9f9e65/jetty-websocket-8.1.15.v20140411.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.4.0/d6a66c7a5f01cf500377bd669507a08cfeba882a/jackson-annotations-2.4.0.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.4.5/6fb96728ee26edb19fe329d94f3bd4df1a97652a/jackson-core-2.4.5.jar
-file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-aop/4.1.6.RELEASE/686c13ba57d9423dede9c5d580dcadc5c67a2761/spring-aop-4.1.6.RELEASE.jar
-file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/4.1.6.RELEASE/ce2d409d470948f11fad41ffdf37dcff4d28cd7c/spring-beans-4.1.6.RELEASE.jar
-file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-expression/4.1.6.RELEASE/8bf70887c2c883a6f6e552dbe46eec35c07adf6a/spring-expression-4.1.6.RELEASE.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-aspects/4.1.6.RELEASE/4667823d6133f9543f12e58ddb6747ee4e4d42a5/spring-aspects-4.1.6.RELEASE.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.aspectj/aspectjrt/1.8.5/39a8ff2d1f79267907f5573c090b342b040b9682/aspectjrt-1.8.5.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.aspectj/aspectjweaver/1.8.5/6004670a8cbcbe794d73ad00106779561ad1b180/aspectjweaver-1.8.5.jar
@@ -135,7 +141,6 @@ file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/io.projectreactor.spri
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/io.projectreactor/reactor-bus/2.0.0.RELEASE/91071e996c896444c29c1e1dbc7c6c32d2c29037/reactor-bus-2.0.0.RELEASE.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/commons-validator/commons-validator/1.4.0/42fa1046955ade59f5354a1876cfc523cea33815/commons-validator-1.4.0.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-json/2.4.3/3f7b89d3512a001e4e3472cd7b4e29005b00fe4c/groovy-json-2.4.3.jar
-file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-web/4.1.6.RELEASE/960101b25d0ec6f45d550bf92c00de8c6a584e6a/spring-web-4.1.6.RELEASE.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.grails/grails-taglib/3.0.1/eaa23b329a730e893a3a6f1ffa1ce61e174cca3c/grails-taglib-3.0.1.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.grails/grails-datastore-gorm-plugin-support/4.0.0.RELEASE/f8cfae6e415cbbb47bb0885f83995e1a51750bde/grails-datastore-gorm-plugin-support-4.0.0.RELEASE.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.springframework/spring-orm/4.1.6.RELEASE/d5b70acee6ddfab47786c31114c89b895654cb97/spring-orm-4.1.6.RELEASE.jar
@@ -157,7 +162,6 @@ file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.w3c.css/sac/1.3/cd
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-util/8.1.15.v20140411/9fe1fedd4c3a0bc5dbc2f1c0588fc5c9c83014a5/jetty-util-8.1.15.v20140411.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-io/8.1.15.v20140411/8849cf59187275366cd05f37b2fb71319291370b/jetty-io-8.1.15.v20140411.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-http/8.1.15.v20140411/ab816e1b5eb0e055cfa4f3aef6876de210e2be7b/jetty-http-8.1.15.v20140411.jar
-file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/aopalliance/aopalliance/1.0/235ba8b489512805ac13a8f9ea77a1ca5ebe3e8/aopalliance-1.0.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.grails/grails-web-taglib/3.0.1/a6aa07efe84b29540941849ef78119132f8fd219/grails-web-taglib-3.0.1.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/opensymphony/sitemesh/2.4/fa84c82cce30a9a632c08dd2277d63993d972cf5/sitemesh-2.4.jar
 file:/C:/Users/dmadmin/.gradle/caches/modules-2/files-2.1/org.apache.tomcat/tomcat-juli/7.0.55/7b0d3759db33865f882e77bdddb87c3cb28cecc3/tomcat-juli-7.0.55.jar

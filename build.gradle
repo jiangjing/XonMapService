@@ -54,8 +54,10 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-actuator"
     compile "org.springframework.boot:spring-boot-autoconfigure"
     compile "org.springframework.boot:spring-boot-starter-tomcat"
+    compile "org.springframework.boot:spring-boot-starter-security"
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-web-boot"
+    //compile "org.grails.plugins:mail"
 
     compile "org.grails.plugins:hibernate"
     compile "org.grails.plugins:cache"
@@ -65,6 +67,7 @@ dependencies {
     runtime "org.grails.plugins:scaffolding"
 
     runtime "mysql:mysql-connector-java:5.1.35"
+
 
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails.plugins:geb"

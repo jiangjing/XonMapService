@@ -21,7 +21,7 @@ class Comment {
         def map = [:]
         map.id = id
         map.text = text
-        map.dateCreated = commonService.dateTimeToString(dateCreated)
+        map.dateCreated = commonService.dateToString(dateCreated)
 
         return map
     }

@@ -1,46 +1,56 @@
 package com.xonmap.controller
 
+import com.xonmap.Constants
 import com.xonmap.domain.User
-import grails.converters.JSON
-import grails.rest.RestfulController
-import grails.transaction.Transactional
 import org.grails.web.json.JSONObject
+import org.springframework.security.core.context.SecurityContextHolder
 
 class UserController {
     static responseFormats = ["json"]
+    static namespace = "user"
     def commonService
 
     def login() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def email = input.email
+        def password = input.password
+        def token = input.token
         try {
-            def input = request.JSON
-            def email = input.email
-            def password = input.password
+            def user
+            if (token) {
+                user = commonService.validateAccountByToken(email, token, messages)
+            } else {
+                user = commonService.validateAccount(email, password, messages)
+            }
 
-            def user = validate(email, password, true, true, false, messages)
             if (user) {
-                result.putAll user.map
+                if (!token) {
+                    token = commonService.newToken(email)
+                }
 
-                try {
-                    user.lastLoginDate = new Date()
-                    user.save()
+                if (token != user.token) {
+                    user.token = token
                 }
-                catch (Exception e) {
-                    log.error("Failed to update last login date.", e)
-                }
+
+                user.lastLoginDate = new Date()
+                commonService.saveObject(user, result, messages, true)
+
+                result.token = token
             }
         }
         catch (Exception e) {
+            result.clear()
             messages.add e.toString()
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
@@ -50,16 +60,12 @@ class UserController {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def email = input.email
         try {
-            def input = request.JSON
-            def email = input.email
-
-            validate(null, null, true, false, false, messages)
-            if (!messages) {
-                def user = commonService.getUser(email, messages, commonService.WARN_IF_NOT_FOUND)
-                if (user) {
-                    result.putAll user.mapI
-                }
+            def user = commonService.getUser(email, messages, Constants.WARN_IF_NOT_FOUND)
+            if (user) {
+                result.putAll user.mapI
             }
         }
         catch (Exception e) {
@@ -67,10 +73,10 @@ class UserController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
@@ -80,31 +86,27 @@ class UserController {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def filter = input.filter
         try {
-            def input = request.JSON
-            def filter = input.filter
-
-            validate(null, null, true, false, false, messages)
-            if (!messages) {
-                def userList
-                if (filter) {
-                    userList = User.findAllByEmailLikeOrNicknameLike("%" + filter + "%", "%" + filter + "%", [sort: "email"])
-                } else {
-                    userList = User.findAll()
-                }
-
-                result.users = userList*.mapI
+            def userList
+            if (filter) {
+                userList = User.findAllByEmailLikeOrNicknameLike("%" + filter + "%", "%" + filter + "%", [sort: "email"])
+            } else {
+                userList = User.findAll()
             }
+
+            result.users = userList*.mapI
         }
         catch (Exception e) {
             messages.add e.toString()
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
@@ -114,19 +116,15 @@ class UserController {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def email = input.email
         try {
-            def input = request.JSON
-            def email = input.email
-
-            validate(null, null, true, false, false, messages)
-            if (!messages) {
-                if (!email) {
-                    messages.add message(code: "user.email.empty")
-                } else {
-                    def user = commonService.getUser(email, messages, commonService.WARN_IF_NOT_FOUND)
-                    if (user) {
-                        result.followers = user.followers*.mapI
-                    }
+            if (!email) {
+                messages.add message(code: "user.email.empty")
+            } else {
+                def user = commonService.getUser(email, messages, Constants.WARN_IF_NOT_FOUND)
+                if (user) {
+                    result.followers = user.followers*.mapI
                 }
             }
         }
@@ -135,10 +133,10 @@ class UserController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
@@ -148,19 +146,15 @@ class UserController {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def email = input.email
         try {
-            def input = request.JSON
-            def email = input.email
-
-            validate(null, null, true, false, false, messages)
-            if (!messages) {
-                if (!email) {
-                    messages.add message(code: "user.email.empty")
-                } else {
-                    def user = commonService.getUser(email, messages, commonService.WARN_IF_NOT_FOUND)
-                    if (user) {
-                        result.followees = user.followees*.mapI
-                    }
+            if (!email) {
+                messages.add message(code: "user.email.empty")
+            } else {
+                def user = commonService.getUser(email, messages, Constants.WARN_IF_NOT_FOUND)
+                if (user) {
+                    result.followees = user.followees*.mapI
                 }
             }
         }
@@ -169,94 +163,104 @@ class UserController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
     }
 
-    @Transactional
     def create() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def email = input.email
+        def password = input.password
+        def externalUserId = input.externalUserId
+        def nickname = input.nickname
+        def userSource = input.userSource
         try {
-            def input = request.JSON
-            def email = input.email
-            def password = input.password
-            def nickname = input.nickname
-            def userSource = input.userSource
+            if (!email) {
+                messages.add message(code: "user.email.empty")
+            }
 
-            validate(null, null, true, false, false, messages)
-            if (!messages) {
-                if (!email) {
-                    messages.add message(code: "user.email.empty")
-                }
+            if (!nickname) {
+                messages.add message(code: "user.nickname.empty")
+            }
 
-                if (!password) {
-                    messages.add message(code: "user.password.empty")
-                }
+            if (!userSource) {
+                userSource = Constants.USER_SOURCE_INLINE
+            }
 
-                if (!nickname) {
-                    messages.add message(code: "user.nickname.empty")
-                }
-
-                if (!userSource) {
-                    userSource = commonService.USER_SOURCE_INLINE
+            if (userSource != Constants.USER_SOURCE_INLINE && userSource != Constants.USER_SOURCE_FACEBOOK) {
+                messages.add message(code: "user.source.invalid", args: [userSource])
+            } else {
+                if (userSource == Constants.USER_SOURCE_INLINE) {
+                    if (!password) {
+                        messages.add message(code: "user.password.empty")
+                    }
                 } else {
-                    if (userSource != commonService.USER_SOURCE_INLINE && userSource != commonService.USER_SOURCE_FACEBOOK) {
-                        messages.add message(code: "user.source.invalid", args: [userSource])
+                    if (!externalUserId) {
+                        messages.add message(code: "user.external.id.empty")
                     }
                 }
+            }
 
-                if (!messages) {
-                    def user = commonService.getUser(email, messages, commonService.WARN_IF_FOUND);
-                    if (!user) {
-                        def role = commonService.getRole(commonService.ROLE_USER, messages, commonService.WARN_IF_NOT_FOUND)
-                        if (role) {
-                            user = new User();
-                            user.email = email;
-                            user.password = password;
-                            user.nickname = nickname;
-                            user.userSource = userSource
-                            user.role = role
-
-                            saveUser(user, result, messages, true);
+            if (!messages) {
+                def user = commonService.getUser(email, messages, Constants.WARN_IF_FOUND);
+                if (!user) {
+                    def role = commonService.getRole(Constants.ROLE_USER, messages, Constants.WARN_IF_NOT_FOUND)
+                    if (role) {
+                        user = new User();
+                        user.email = email;
+                        if (!password) {
+                            password = commonService.randomPassword()
                         }
+                        user.password = password
+                        user.nickname = nickname;
+                        user.userSource = userSource
+                        def token = commonService.newToken(email)
+                        user.token = token
+                        if (userSource != Constants.USER_SOURCE_INLINE) {
+                            user.externalUserId = externalUserId
+                        }
+                        user.role = role
+
+                        commonService.saveObject(user, result, messages, true);
+
+                        result.token = token
                     }
                 }
             }
         }
         catch (Exception e) {
+            log.error("Failed to create user", e)
+            result.clear()
             messages.add e.toString()
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
     }
 
-    @Transactional
     def update() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def newPassword = input.newPassword
+        def newNickname = input.newNickname
         try {
-            def input = request.JSON
-            def email = input.email
-            def password = input.password
-            def newPassword = input.newPassword
-            def newNickname = input.newNickname
-
-            def user = validate(email, password, true, true, false, messages)
+            def user = commonService.getUser(SecurityContextHolder.context.authentication.principal, messages, Constants.WARN_IF_NOT_FOUND)
             if (user) {
                 if (newPassword == null && newNickname == null) {
                     messages.add message(code: "user.nothing.to.update")
@@ -272,7 +276,7 @@ class UserController {
                     if (!messages) {
                         def updated = false
                         if (newPassword) {
-                            if (user.password != commonService.encodePassword(newPassword)) {
+                            if (user.password != commonService.encodeText(newPassword)) {
                                 user.password = newPassword
                                 updated = true
                             }
@@ -285,9 +289,11 @@ class UserController {
                             }
                         }
 
-                        saveUser(user, result, messages, updated)
+                        commonService.saveObject(user, result, messages, updated)
                     }
                 }
+            } else {
+                messages.add message(code: "user.not.found", args: [SecurityContextHolder.context.authentication.principal])
             }
         }
         catch (Exception e) {
@@ -295,10 +301,10 @@ class UserController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
@@ -308,22 +314,18 @@ class UserController {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def email = input.email
+        def followeeEmail = input.followeeEmail
         try {
-            def input = request.JSON
-            def email = input.email
-            def followeeEmail = input.followeeEmail
-
-            validate(null, null, true, false, false, messages)
-            if (!messages) {
-                def user = commonService.getUser(email, messages, commonService.WARN_IF_NOT_FOUND)
-                if (user) {
-                    def followee = commonService.getUser(followeeEmail, messages, commonService.WARN_IF_NOT_FOUND)
-                    if (followee) {
-                        if (!user.followees?.contains(followee)) {
-                            result.following = false
-                        } else {
-                            result.following = true
-                        }
+            def user = commonService.getUser(email, messages, Constants.WARN_IF_NOT_FOUND)
+            if (user) {
+                def followee = commonService.getUser(followeeEmail, messages, Constants.WARN_IF_NOT_FOUND)
+                if (followee) {
+                    if (!user.followees?.contains(followee)) {
+                        result.following = false
+                    } else {
+                        result.following = true
                     }
                 }
             }
@@ -333,85 +335,66 @@ class UserController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
     }
 
-    @Transactional
     def follow() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def followeeEmail = input.followeeEmail
         try {
-            def input = request.JSON
-            def email = input.email
-            def password = input.password
-            def followeeEmail = input.followeeEmail
-
-            def user = validate(email, password, true, true, false, messages)
-            if (user) {
-                def followee = commonService.getUser(followeeEmail, messages, commonService.WARN_IF_NOT_FOUND)
-                if (followee) {
-                    if (!user.followees?.contains(followee)) {
-                        if (!followee.followers?.contains(user)) {
-                            followee.addToFollowers(user)
-                            saveUser(followee, null, messages, true)
-                        }
-
-                        user.addToFollowees(followee)
-                        saveUser(user, result, messages, true)
-                    } else {
-                        messages.add message(code: "user.followed", args: [followeeEmail])
+            if (SecurityContextHolder.context.authentication.principal == followeeEmail) {
+                messages.add message(code: "user.follow.self")
+            } else {
+                def user = commonService.getUser(SecurityContextHolder.context.authentication.principal, messages, Constants.WARN_IF_NOT_FOUND)
+                if (user) {
+                    def followee = commonService.getUser(followeeEmail, messages, Constants.WARN_IF_NOT_FOUND)
+                    if (followee) {
+                        commonService.follow(user, followee)
                     }
+                } else {
+                    messages.add message(code: "user.not.found", args: [SecurityContextHolder.context.authentication.principal])
                 }
             }
         }
         catch (Exception e) {
+            log.error("Failed to follow " + followeeEmail, e)
             messages.add e.toString()
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
     }
 
-    @Transactional
     def unfollow() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def followeeEmail = input.followeeEmail
         try {
-            def input = request.JSON
-            def email = input.email
-            def password = input.password
-            def followeeEmail = input.followeeEmail
-
-            def user = validate(email, password, true, true, false, messages)
+            def user = commonService.getUser(SecurityContextHolder.context.authentication.principal, messages, Constants.WARN_IF_NOT_FOUND)
             if (user) {
-                def followee = commonService.getUser(followeeEmail, messages, commonService.WARN_IF_NOT_FOUND)
+                def followee = commonService.getUser(followeeEmail, messages, Constants.WARN_IF_NOT_FOUND)
                 if (followee) {
-                    if (user.followees?.contains(followee)) {
-                        if (followee.followers?.contains(user)) {
-                            followee.removeFromFollowers(user)
-                            saveUser(followee, null, messages, true)
-                        }
-
-                        user.removeFromFollowees(followee)
-                        saveUser(user, result, messages, true)
-                    } else {
-                        messages.add message(code: "user.not.followed", args: [followeeEmail])
-                    }
+                    commonService.unfollow(user, followee, result, messages)
                 }
+            } else {
+                messages.add message(code: "user.not.found", args: [SecurityContextHolder.context.authentication.principal])
             }
         }
         catch (Exception e) {
@@ -419,46 +402,13 @@ class UserController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
-    }
-
-    private validate(email, password, requirePost, validateUser, requireAdmin, messages) {
-        def user
-        if (requirePost && !request.post) {
-            messages.add message(code: "method.not.supported", args: [request.method])
-        }
-
-        if (validateUser) {
-            if (requireAdmin) {
-                user = commonService.validateAdmin(email, password, messages)
-            } else {
-                user = commonService.validateAccount(email, password, messages)
-            }
-        }
-
-        return user
-    }
-
-    private saveUser(user, result, messages, updated) {
-        if (updated) {
-            if (user.validate()) {
-                user.save(flush : true)
-
-                result?.putAll user.map
-            } else {
-                user.errors.allErrors.each {
-                    messages?.add message(error: it)
-                }
-            }
-        } else {
-            result?.putAll user.map
-        }
     }
 
 }

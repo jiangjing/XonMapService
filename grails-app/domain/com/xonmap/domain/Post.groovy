@@ -1,8 +1,9 @@
 package com.xonmap.domain
 
+import groovy.time.TimeCategory
+
 class Post {
     transient commonService
-    String title
     String text
     Date dateCreated
     Date startDate
@@ -15,7 +16,6 @@ class Post {
     static belongsTo = [author: User]
 
     static constraints = {
-        title nullable: false, blank: false
         text nullable: false, blank: false
         startDate nullable: true
         endDate nullable : true
@@ -33,21 +33,20 @@ class Post {
     def beforeInsert() {
         if(!startDate){
             startDate = new Date()
-        }
 
-        if(!endDate){
-            endDate = new Date()
+            use(TimeCategory){
+                endDate = startDate + tag.duration.days
+            }
         }
     }
 
     def getMap(){
         def map = [:]
         map.id = id
-        map.title = title
         map.text = text
-        map.dateCreated = commonService.dateTimeToString(dateCreated)
-        map.startDate = commonService.dateToString(dateCreated)
-        map.endDate = commonService.dateToString(dateCreated)
+        map.dateCreated = commonService.dateToString(dateCreated)
+        map.startDate = commonService.dateToString(startDate)
+        map.endDate = commonService.dateToString(endDate)
         map.latitude = latitude
         map.longitude = longitude
         map.tagName = tag.name
@@ -62,7 +61,7 @@ class Post {
     def getMapI(){
         def map = [:]
         map.id = id
-        map.title = title
+        map.text = text
         map.latitude = latitude
         map.longitude = longitude
         map.tagName = tag.name

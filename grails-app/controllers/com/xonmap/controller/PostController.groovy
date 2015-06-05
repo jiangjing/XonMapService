@@ -1,29 +1,26 @@
 package com.xonmap.controller
 
-import com.xonmap.domain.Comment
+import com.xonmap.Constants
 import com.xonmap.domain.Image
 import com.xonmap.domain.Post
 import org.grails.web.json.JSONObject
-import grails.transaction.Transactional
+import org.springframework.security.core.context.SecurityContextHolder
 
 class PostController {
     static responseFormats = ["json"]
+    static namespace = "user"
     def commonService
 
     def get() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def postId = input.postId
         try {
-            def input = request.JSON
-            def postId = input.postId
-
-            validate(null, null, true, false, false, messages)
-            if (!messages) {
-                def post = commonService.getPost(postId, messages, commonService.WARN_IF_NOT_FOUND)
-                if (post) {
-                    result.putAll post.map
-                }
+            def post = commonService.getPost(postId, messages, Constants.WARN_IF_NOT_FOUND)
+            if (post) {
+                result.putAll post.map
             }
         }
         catch (Exception e) {
@@ -31,10 +28,10 @@ class PostController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
@@ -44,25 +41,23 @@ class PostController {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def content = input.content
+        def strCreationDateFrom = input.creationDateFrom
+        def strCreationDateTo = input.creationDateTo
+        def strStartDateFrom = input.startDateFrom
+        def strStartDateTo = input.startDateTo
+        def strEndDateFrom = input.endDateFrom
+        def strEndDateTo = input.endDateTo
+        def distanceRange = input.distanceRange
+        def latitude = input.latitude
+        def longitude = input.longitude
+        def tagName = input.tagName
+        def authorEmail = input.authorEmail
         try {
-            def input = request.JSON
-            def content = input.content
-            def strCreationDateFrom = input.creationDateFrom
-            def strCreationDateTo = input.creationDateTo
-            def strStartDateFrom = input.startDateFrom
-            def strStartDateTo = input.startDateTo
-            def strEndDateFrom = input.endDateFrom
-            def strEndDateTo = input.endDateTo
-            def distanceRange = input.distanceRange
-            def latitude = input.latitude
-            def longitude = input.longitude
-            def tagName = input.tagName
-            def authorEmail = input.authorEmail
-
-            if(latitude != null && longitude != null && (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180)){
-                messages.add message(code : "post.location.invalid")
-            }
-            else {
+            if (latitude != null && longitude != null && (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180)) {
+                messages.add message(code: "post.location.invalid")
+            } else {
                 def defaultDateFrom = commonService.stringToDate("01/01/1970")
                 def defaultDateTo = new Date()
 
@@ -78,7 +73,7 @@ class PostController {
                     if (!strCreationDateTo) {
                         creationDateTo = defaultDateTo
                     } else {
-                        creationDateTo = commonService.stringToDateTime(strCreationDateTo)
+                        creationDateTo = commonService.stringToDateX(strCreationDateTo)
                     }
                 }
 
@@ -94,7 +89,7 @@ class PostController {
                     if (!strStartDateTo) {
                         startDateTo = defaultDateTo
                     } else {
-                        startDateTo = commonService.stringToDateTime(strStartDateTo)
+                        startDateTo = commonService.stringToDateX(strStartDateTo)
                     }
                 }
 
@@ -110,15 +105,15 @@ class PostController {
                     if (!strEndDateTo) {
                         endDateTo = defaultDateTo
                     } else {
-                        endDateTo = commonService.stringToDateTime(strEndDateTo)
+                        endDateTo = commonService.stringToDateX(strEndDateTo)
                     }
                 }
 
                 def searchResult = Post.createCriteria().list {
                     if (content) {
                         or {
-                            like("title", "%" + content + "%")
-                            like("title", "%" + content + "%")
+                            like("text", "%" + content + "%")
+                            like("text", "%" + content + "%")
                         }
                     }
 
@@ -134,14 +129,14 @@ class PostController {
                         between("endDate", endDateFrom, endDateTo)
                     }
 
-                    if(tagName){
+                    if (tagName) {
                         tag {
                             eq("name", tagName)
                         }
                     }
 
-                    if(authorEmail){
-                        author{
+                    if (authorEmail) {
+                        author {
                             eq("email", authorEmail)
                         }
                     }
@@ -150,11 +145,11 @@ class PostController {
                 }
 
                 def posts = []
-                searchResult.each{
+                searchResult.each {
                     def postLatitude = it.latitude
                     def postLongitude = it.longitude
 
-                    if(distanceRange <= 0 || commonService.distance(latitude, longitude, postLatitude, postLongitude) <= distanceRange){
+                    if (distanceRange <= 0 || commonService.distance(latitude, longitude, postLatitude, postLongitude) <= distanceRange) {
                         posts.add it
                     }
                 }
@@ -167,75 +162,72 @@ class PostController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
     }
 
-    @Transactional
     def create() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def text = input.text
+        def strStartDate = input.startDate
+        def strEndDate = input.endDate
+        def latitude = input.latitude
+        def longitude = input.longitude
+        def tagName = input.tagName
+        def imageUrls = input.imageUrls
         try {
-            def input = request.JSON
-            def email = input.email
-            def password = input.password
-            def title = input.title
-            def text = input.text
-            def strStartDate = input.startDate
-            def strEndDate = input.endDate
-            def latitude = input.latitude
-            def longitude = input.longitude
-            def tagName = input.tagName
-            def imageUrls = input.imageUrls
+            if (!text) {
+                messages.add message(code: "post.text.empty")
+            }
 
-            def user = validate(email, password, true, true, false, messages)
-            if (user) {
-                if(!title){
-                    messages.add message(code : "post.title.empty")
-                }
+            if (latitude == null || longitude == null || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+                messages.add message(code: "post.location.invalid")
+            }
 
-                if(!text){
-                    messages.add message(code : "post.text.empty")
-                }
-
-                if(latitude == null || longitude == null || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180){
-                    messages.add message(code : "post.location.invalid")
-                }
-
-                if(!messages) {
-                    def tag = commonService.getTag(tagName, messages, commonService.WARN_IF_NOT_FOUND)
-                    if (tag) {
-                        def post = new Post()
-                        post.title = title
-                        post.text = text
-                        if (strStartDate) {
-                            post.startDate = commonService.stringToDate(strStartDate)
-                        }
-                        if (strEndDate) {
-                            post.endDate = commonService.stringToDate(strEndDate)
-                        }
-                        post.latitude = latitude
-                        post.longitude = longitude
-                        post.tag = tag
-                        post.author = user
-
-                        if (imageUrls) {
-                            imageUrls.each {
-                                def image = new Image()
-                                image.imageUrl = it
-
-                                post.addToImages(image)
-                            }
-                        }
-
-                        savePost(post, result, messages, true)
+            def tag = commonService.getTag(tagName, messages, Constants.WARN_IF_NOT_FOUND)
+            if (tag) {
+                if (tag.duration == Constants.DURATION_NA) {
+                    if (!strStartDate || !strEndDate) {
+                        messages.add message(code: "post.duration.invalid")
                     }
+                }
+            }
+
+            if (!messages) {
+                def user = commonService.getUser(SecurityContextHolder.context.authentication.principal, messages, Constants.WARN_IF_NOT_FOUND)
+                if (user) {
+                    def post = new Post()
+                    post.text = text
+                    post.latitude = latitude
+                    post.longitude = longitude
+                    post.tag = tag
+                    if (tag.duration == Constants.DURATION_NA) {
+                        post.startDate = commonService.stringToDate(strStartDate)
+                        post.endDate = commonService.stringToDateX(strEndDate)
+                    }
+
+                    post.author = user
+
+                    if (imageUrls) {
+                        imageUrls.each {
+                            def image = new Image()
+                            image.imageUrl = it
+
+                            post.addToImages(image)
+                        }
+                    }
+
+                    commonService.saveObject(post, result, messages, true)
+                } else {
+                    messages.add message(code: "user.not.found", args: [SecurityContextHolder.context.authentication.principal])
                 }
             }
         }
@@ -244,38 +236,30 @@ class PostController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
     }
 
-    @Transactional
     def like() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def postId = input.postId
         try {
-            def input = request.JSON
-            def email = input.email
-            def password = input.password
-            def postId = input.postId
-
-            def user = validate(email, password, true, true, false, messages)
+            def user = commonService.getUser(SecurityContextHolder.context.authentication.principal, messages, Constants.WARN_IF_NOT_FOUND)
             if (user) {
-                def post = commonService.getPost(postId, messages, commonService.WARN_IF_NOT_FOUND)
+                def post = commonService.getPost(postId, messages, Constants.WARN_IF_NOT_FOUND)
                 if (post) {
-                    if (!post.likers?.contains(user)) {
-                        post.addToLikers(user)
-
-                        savePost(post, result, messages, true)
-                    } else {
-                        messages.add message(code: "post.liked")
-                    }
+                    commonService.like(user, post, result, messages)
                 }
+            } else {
+                messages.add message(code: "user.not.found", args: [SecurityContextHolder.context.authentication.principal])
             }
         }
         catch (Exception e) {
@@ -283,38 +267,30 @@ class PostController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
     }
 
-    @Transactional
     def dislike() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def postId = input.postId
         try {
-            def input = request.JSON
-            def email = input.email
-            def password = input.password
-            def postId = input.postId
-
-            def user = validate(email, password, true, true, false, messages)
+            def user = commonService.getUser(SecurityContextHolder.context.authentication.principal, messages, Constants.WARN_IF_NOT_FOUND)
             if (user) {
-                def post = commonService.getPost(postId, messages, commonService.WARN_IF_NOT_FOUND)
+                def post = commonService.getPost(postId, messages, Constants.WARN_IF_NOT_FOUND)
                 if (post) {
-                    if (post.likers?.contains(user)) {
-                        post.removeFromLikers(user)
-
-                        savePost(post, result, messages, true)
-                    } else {
-                        messages.add message(code: "post.disliked")
-                    }
+                    commonService.dislike(user, post, result, messages)
                 }
+            } else {
+                messages.add message(code: "user.not.found", args: [SecurityContextHolder.context.authentication.principal])
             }
         }
         catch (Exception e) {
@@ -322,10 +298,10 @@ class PostController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
@@ -335,14 +311,13 @@ class PostController {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def email = input.email
+        def postId = input.postId
         try {
-            def input = request.JSON
-            def email = input.email
-            def postId = input.postId
-
-            def user = commonService.getUser(email, messages, commonService.WARN_IF_NOT_FOUND)
+            def user = commonService.getUser(email, messages, Constants.WARN_IF_NOT_FOUND)
             if (user) {
-                def post = commonService.getPost(postId, messages, commonService.WARN_IF_NOT_FOUND)
+                def post = commonService.getPost(postId, messages, Constants.WARN_IF_NOT_FOUND)
                 if (post) {
                     if (!post.likers?.contains(user)) {
                         result.liking = false
@@ -357,43 +332,34 @@ class PostController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
     }
 
-    @Transactional
     def comment() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def postId = input.postId
+        def commentText = input.commentText
         try {
-            def input = request.JSON
-            def email = input.email
-            def password = input.password
-            def postId = input.postId
-            def commentText = input.commentText
-
-            if(!commentText){
-                messages.add message(code : "comment.text.empty")
-            }
-            else {
-                def user = validate(email, password, true, true, false, messages)
+            if (!commentText) {
+                messages.add message(code: "comment.text.empty")
+            } else {
+                def user = commonService.getUser(SecurityContextHolder.context.authentication.principal, messages, Constants.WARN_IF_NOT_FOUND)
                 if (user) {
-                    def post = commonService.getPost(postId, messages, commonService.WARN_IF_NOT_FOUND)
+                    def post = commonService.getPost(postId, messages, Constants.WARN_IF_NOT_FOUND)
                     if (post) {
-                        def comment = new Comment()
-                        comment.text = commentText
-                        comment.user = user
-
-                        post.addToComments(comment)
-
-                        savePost(post, result, messages, true)
+                        commonService.comment(user, post, commentText, result, messages)
                     }
+                } else {
+                    messages.add message(code: "user.not.found", args: [SecurityContextHolder.context.authentication.principal])
                 }
             }
         }
@@ -402,35 +368,25 @@ class PostController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
     }
 
-    @Transactional
     def uncomment() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def commentId = input.commentId
         try {
-            def input = request.JSON
-            def email = input.email
-            def password = input.password
-            def commentId = input.commentId
-
-            def user = validate(email, password, true, true, false, messages)
-            if (user) {
-                def comment = commonService.getComment(commentId, messages, commonService.WARN_IF_NOT_FOUND)
-                if (comment) {
-                    def post = comment.post
-                    post.removeFromComments(comment)
-
-                    savePost(post, result, messages, true)
-                }
+            def comment = commonService.getComment(commentId, messages, Constants.WARN_IF_NOT_FOUND)
+            if (comment) {
+                commonService.uncomment(comment, result, messages)
             }
         }
         catch (Exception e) {
@@ -438,35 +394,28 @@ class PostController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
     }
 
-    @Transactional
     def delete() {
         def result = new JSONObject()
         def messages = []
 
+        def input = request.JSON
+        def postId = input.postId
         try {
-            def input = request.JSON
-            def email = input.email
-            def password = input.password
-            def postId = input.postId
-
-            def user = validate(email, password, true, true, false, messages)
-            if (user) {
-                def post = commonService.getPost(postId, messages, commonService.WARN_IF_NOT_FOUND)
-                if (post) {
-                    if (post.author.email != email) {
-                        messages.add message(code: "post.delete.not.authorized")
-                    } else {
-                        post.delete()
-                    }
+            def post = commonService.getPost(postId, messages, Constants.WARN_IF_NOT_FOUND)
+            if (post) {
+                if (post.author.email != email) {
+                    messages.add message(code: "post.delete.not.authorized")
+                } else {
+                    commonService.deleteObject(post)
                 }
             }
         }
@@ -475,45 +424,13 @@ class PostController {
         }
 
         if (messages) {
-            result.status = commonService.STATUS_FAIL
+            result.status = Constants.STATUS_FAIL
             result.messages = messages
         } else {
-            result.status = commonService.STATUS_SUCCESSFUL
+            result.status = Constants.STATUS_SUCCESSFUL
         }
 
         respond result
     }
 
-    private validate(email, password, requirePost, validateUser, requireAdmin, messages) {
-        def user
-        if (requirePost && !request.post) {
-            messages.add message(code: "method.not.supported", args: [request.method])
-        }
-
-        if (validateUser) {
-            if (requireAdmin) {
-                user = commonService.validateAdmin(email, password, messages)
-            } else {
-                user = commonService.validateAccount(email, password, messages)
-            }
-        }
-
-        return user
-    }
-
-    private savePost(post, result, messages, updated) {
-        if (updated) {
-            if (post.validate()) {
-                post.save(flush: true)
-
-                result?.putAll post.map
-            } else {
-                post.errors.allErrors.each {
-                    messages?.add message(error: it)
-                }
-            }
-        } else {
-            result?.putAll post.map
-        }
-    }
 }

@@ -1,24 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id="XonMapService" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$" external.system.id="GRADLE" external.system.module.group="com.xonmap" external.system.module.version="0.1" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
-    <facet type="web" name="GrailsWeb">
-      <configuration>
-        <webroots>
-          <root url="file://$MODULE_DIR$/grails-app/views" relative="/" />
-        </webroots>
-        <sourceRoots />
-      </configuration>
-    </facet>
-    <facet type="hibernate" name="Hibernate">
-      <configuration>
-        <datasource-map />
-        <naming-strategy-map />
-      </configuration>
-    </facet>
     <facet type="web" name="Web Gradle : XonMapService-0.1.war">
       <configuration>
         <webroots>
           <root url="file://$MODULE_DIR$/src/main/webapp" relative="/" />
+          <root url="file://$MODULE_DIR$/build/assetCompile/assets" relative="/assets" />
         </webroots>
         <sourceRoots>
           <root url="file://$MODULE_DIR$/grails-app/domain" />
@@ -34,6 +21,20 @@
           <root url="file://$MODULE_DIR$/grails-app/controllers" />
           <root url="file://$MODULE_DIR$/grails-app/conf" />
         </sourceRoots>
+      </configuration>
+    </facet>
+    <facet type="web" name="GrailsWeb">
+      <configuration>
+        <webroots>
+          <root url="file://$MODULE_DIR$/grails-app/views" relative="/" />
+        </webroots>
+        <sourceRoots />
+      </configuration>
+    </facet>
+    <facet type="hibernate" name="Hibernate">
+      <configuration>
+        <datasource-map />
+        <naming-strategy-map />
       </configuration>
     </facet>
   </component>
@@ -64,6 +65,7 @@
     <orderEntry type="library" exported="" name="Gradle: org.springframework.boot:spring-boot-starter-actuator:1.2.3.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.springframework.boot:spring-boot-autoconfigure:1.2.3.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.springframework.boot:spring-boot-starter-tomcat:1.2.3.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework.boot:spring-boot-starter-security:1.2.3.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.grails:grails-web-boot:3.0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.grails.plugins:hibernate:4.3.8.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.grails.plugins:cache:3.0.1" level="project" />
@@ -81,6 +83,13 @@
     <orderEntry type="library" exported="" name="Gradle: org.apache.tomcat.embed:tomcat-embed-el:8.0.20" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.tomcat.embed:tomcat-embed-logging-juli:8.0.20" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.tomcat.embed:tomcat-embed-websocket:8.0.20" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-beans:4.1.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-context:4.1.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-expression:4.1.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-web:4.1.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework.security:spring-security-config:3.2.7.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework.security:spring-security-web:3.2.7.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-aop:4.1.6.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.grails:grails-bootstrap:3.0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.grails:grails-plugin-rest:3.0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.grails:grails-plugin-databinding:3.0.1" level="project" />
@@ -107,7 +116,8 @@
     <orderEntry type="library" exported="" name="Gradle: org.grails:grails-plugin-codecs:3.0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: ch.qos.logback:logback-core:1.1.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.4.5" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-context:4.1.6.RELEASE" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: aopalliance:aopalliance:1.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: org.springframework.security:spring-security-core:3.2.7.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.codehaus.groovy:groovy-xml:2.4.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.grails:grails-web:3.0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.grails:grails-plugin-datasource:3.0.1" level="project" />
@@ -139,9 +149,6 @@
     <orderEntry type="library" exported="" name="Gradle: org.grails:grails-datastore-simple:4.0.0.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.4.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.4.5" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-aop:4.1.6.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-beans:4.1.6.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-expression:4.1.6.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-aspects:4.1.6.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.aspectj:aspectjrt:1.8.5" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.aspectj:aspectjweaver:1.8.5" level="project" />
@@ -160,7 +167,6 @@
     <orderEntry type="library" exported="" name="Gradle: io.projectreactor:reactor-bus:2.0.0.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: commons-validator:commons-validator:1.4.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.codehaus.groovy:groovy-json:2.4.3" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-web:4.1.6.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.grails:grails-taglib:3.0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.grails:grails-datastore-gorm-plugin-support:4.0.0.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.springframework:spring-orm:4.1.6.RELEASE" level="project" />
@@ -171,7 +177,6 @@
     <orderEntry type="library" exported="" name="Gradle: org.codehaus.gpars:gpars:1.2.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: io.projectreactor:reactor-core:2.0.0.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: io.projectreactor:reactor-stream:2.0.0.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.grails:grails-web-taglib:3.0.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: opensymphony:sitemesh:2.4" level="project" />
     <orderEntry type="library" exported="" name="Gradle: org.apache.tomcat:tomcat-juli:7.0.55" level="project" />
@@ -199,6 +204,7 @@
     <orderEntry type="library" exported="" name="Gradle: xml-apis:xml-apis:1.0.b2" level="project" />
     <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: org.grails.plugins:asset-pipeline:3.0.1" level="project" />
     <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: org.grails.plugins:scaffolding:3.0.2" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: mysql:mysql-connector-java:5.1.35" level="project" />
     <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: org.mozilla:rhino:1.7R4" level="project" />
     <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: com.bertramlabs.plugins:asset-pipeline-core:2.1.1" level="project" />
     <orderEntry type="library" exported="" scope="RUNTIME" name="Gradle: org.grails.plugins:fields:2.0.1" level="project" />

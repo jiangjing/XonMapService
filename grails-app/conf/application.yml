@@ -73,41 +73,47 @@ dataSource:
     pooled: true
     jmxExport: true
     driverClassName: org.gjt.mm.mysql.Driver
+    dbCreate: update
+    url: jdbc:mysql://DEV/xonmap_db
     username: xonmap
     password: P@ssw0rd
-
-environments:
-    development:
-        dataSource:
-            dbCreate: update
-            url: jdbc:mysql://DEV/xonmap_db
-    test:
-        dataSource:
-            dbCreate: update
-            url: jdbc:mysql://DEV/xonmap_db
-    production:
-        dataSource:
-            dbCreate: update
-            url: jdbc:mysql://DEV/xonmap_db
-            properties:
-                jmxEnabled: true
-                initialSize: 5
-                maxActive: 50
-                minIdle: 5
-                maxIdle: 25
-                maxWait: 10000
-                maxAge: 600000
-                timeBetweenEvictionRunsMillis: 5000
-                minEvictableIdleTimeMillis: 60000
-                validationQuery: SELECT 1
-                validationQueryTimeout: 3
-                validationInterval: 15000
-                testOnBorrow: true
-                testWhileIdle: true
-                testOnReturn: false
-                jdbcInterceptors: ConnectionState
-                defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+    properties:
+        jmxEnabled: true
+        initialSize: 5
+        maxActive: 50
+        minIdle: 5
+        maxIdle: 25
+        maxWait: 10000
+        maxAge: 600000
+        timeBetweenEvictionRunsMillis: 5000
+        minEvictableIdleTimeMillis: 60000
+        validationQuery: SELECT 1
+        validationQueryTimeout: 3
+        validationInterval: 15000
+        testOnBorrow: true
+        testWhileIdle: true
+        testOnReturn: false
+        jdbcInterceptors: ConnectionState
+        defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
 
 ---
 server:
+    port: 7080
     context-path: '/xonmapservice'
+
+xonmap:
+    authentication:
+        uri:
+            - /admin[admin]
+            - /user/follow
+            - /user/unfollow
+            - /user/update
+            - /post/create
+            - /post/like
+            - /post/dislike
+            - /post/comment
+            - /post/uncomment
+            - /post/delete
+            - /tag/create
+            - /tag/update
+            - /role

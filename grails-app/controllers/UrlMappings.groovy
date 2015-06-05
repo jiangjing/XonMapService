@@ -3,7 +3,7 @@ class UrlMappings {
     static mappings = {
         "/admin/$controller/$action?/$id?"(namespace : "admin")
 
-        "/$controller/$action?/$id?"()
+        "/$controller/$action?/$id?"(namespace : "user")
 
         "/"(view:"/index")
         "500"(view:'/error')

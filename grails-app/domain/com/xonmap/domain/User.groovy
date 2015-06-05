@@ -1,10 +1,14 @@
 package com.xonmap.domain
 
+import com.xonmap.Constants
+
 class User {
     transient commonService
     String email
     String password
     String nickname
+    String token
+    String externalUserId
     int userSource
     Date dateCreated
     Date lastLoginDate
@@ -17,6 +21,8 @@ class User {
         email blank : false, email: true, nullable: false, unique: true
         password blank: false, nullable: false
         nickname blank: false, nullable: false
+        token nullable : true
+        externalUserId nullable : true
         userSource blank: false, nullable: false
         lastLoginDate nullable: true
     }
@@ -31,13 +37,13 @@ class User {
     }
 
     def beforeInsert() {
-        password = commonService.encodePassword(password)
+        password = commonService.encodeText(password)
         lastLoginDate = new Date()
     }
 
     def beforeUpdate() {
         if (isDirty("password")) {
-            password = commonService.encodePassword(password)
+            password = commonService.encodeText(password)
         }
     }
 
@@ -66,14 +72,14 @@ class User {
     }
 
     def getIsAdmin(){
-        return role.name == commonService.ROLE_ADMIN
+        return role.name == Constants.ROLE_ADMIN
     }
 
     def getIsInlineUser(){
-        return userSource == commonService.USER_SOURCE_INLINE
+        return userSource == Constants.USER_SOURCE_INLINE
     }
 
     def getIsFacebookUser(){
-        return userSource == commonService.USER_SOURCE_FACEBOOK
+        return userSource == Constants.USER_SOURCE_FACEBOOK
     }
 }
