@@ -2,11 +2,13 @@ package com.xonmap.domain
 
 class Image {
     String imageUrl
+    String thumbnailUrl
 
     static belongsTo = [post : Post]
 
     static constraints = {
         imageUrl blank: false, nullable: false
+        thumbnailUrl blank: false, nullable: false
     }
 
     static mapping = {

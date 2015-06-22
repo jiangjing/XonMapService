@@ -12,6 +12,9 @@ appender('STDOUT', ConsoleAppender) {
 root(ERROR, ['STDOUT'])
 
 logger("com.xonmap", DEBUG)
+logger("grails.app", DEBUG)
+logger("org.springframework.security.web.FilterChainProxy", DEBUG)
+logger("org.springframework.security.core.context", DEBUG)
 
 if(Environment.current == Environment.DEVELOPMENT) {
     def targetDir = BuildSettings.TARGET_DIR

@@ -74,7 +74,7 @@ dataSource:
     jmxExport: true
     driverClassName: org.gjt.mm.mysql.Driver
     dbCreate: update
-    url: jdbc:mysql://DEV/xonmap_db
+    url: jdbc:mysql://localhost/xonmap_db
     username: xonmap
     password: P@ssw0rd
     properties:
@@ -117,3 +117,6 @@ xonmap:
             - /tag/create
             - /tag/update
             - /role
+    facebook:
+        api:
+            contextRoot: https://graph.facebook.com

@@ -9,8 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import grails.util.Holders
+import org.springframework.security.web.access.ExceptionTranslationFilter
 
 @Configuration
 @EnableWebSecurity
@@ -29,7 +29,7 @@ public class ProviderSecurityConfig extends WebSecurityConfigurerAdapter {
         http.
                 csrf().disable().
                 sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().
-                addFilterBefore(authenticationFilter(), BasicAuthenticationFilter.class)
+                addFilterAfter(authenticationFilter(), ExceptionTranslationFilter.class)
     }
 
     @Override

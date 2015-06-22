@@ -2,7 +2,6 @@ package com.xonmap.admin.controller
 
 import com.xonmap.Constants
 import com.xonmap.domain.Tag
-import grails.transaction.Transactional
 import org.grails.web.json.JSONObject
 
 class TagController {

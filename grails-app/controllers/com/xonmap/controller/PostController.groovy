@@ -3,6 +3,7 @@ package com.xonmap.controller
 import com.xonmap.Constants
 import com.xonmap.domain.Image
 import com.xonmap.domain.Post
+import com.xonmap.domain.Location
 import org.grails.web.json.JSONObject
 import org.springframework.security.core.context.SecurityContextHolder
 
@@ -50,14 +51,26 @@ class PostController {
         def strEndDateFrom = input.endDateFrom
         def strEndDateTo = input.endDateTo
         def distanceRange = input.distanceRange
-        def latitude = input.latitude
-        def longitude = input.longitude
+        def strLatitude = input.latitude
+        def strLongitude = input.longitude
+        def location = input.location
         def tagName = input.tagName
         def authorEmail = input.authorEmail
         try {
-            if (latitude != null && longitude != null && (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180)) {
-                messages.add message(code: "post.location.invalid")
-            } else {
+            def latitude
+            def longitude
+            if(strLatitude != null && strLongitude != null){
+                latitude = Double.parseDouble(strLatitude)
+                longitude = Double.parseDouble(strLongitude)
+
+                if(latitude < -90 || latitude > 90 || latitude < -90 || latitude > 90){
+                    messages.add message(code: "post.location.geo.invalid", strLatitude, strLongitude)
+                }
+            }
+            else if(strLatitude != null || strLongitude != null){
+                messages.add message(code: "post.location.geo.invalid", strLatitude, strLongitude)
+            }
+            else{
                 def defaultDateFrom = commonService.stringToDate("01/01/1970")
                 def defaultDateTo = new Date()
 
@@ -129,6 +142,12 @@ class PostController {
                         between("endDate", endDateFrom, endDateTo)
                     }
 
+                    if (location){
+                        location{
+                            like("text", "%" + location + "%")
+                        }
+                    }
+
                     if (tagName) {
                         tag {
                             eq("name", tagName)
@@ -146,8 +165,8 @@ class PostController {
 
                 def posts = []
                 searchResult.each {
-                    def postLatitude = it.latitude
-                    def postLongitude = it.longitude
+                    def postLatitude = it.location.latitude
+                    def postLongitude = it.location.longitude
 
                     if (distanceRange <= 0 || commonService.distance(latitude, longitude, postLatitude, postLongitude) <= distanceRange) {
                         posts.add it
@@ -176,20 +195,36 @@ class PostController {
         def messages = []
 
         def input = request.JSON
-        def text = input.text
+        def text = input.postText
         def strStartDate = input.startDate
         def strEndDate = input.endDate
-        def latitude = input.latitude
-        def longitude = input.longitude
+        def strLatitude = input.latitude
+        def strLongitude = input.longitude
+        def locationText = input.location
         def tagName = input.tagName
         def imageUrls = input.imageUrls
+        def thumbnailUrls = input.thumbnailUrls
         try {
             if (!text) {
                 messages.add message(code: "post.text.empty")
             }
 
-            if (latitude == null || longitude == null || latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
-                messages.add message(code: "post.location.invalid")
+            def latitude
+            def longitude
+            if (strLatitude == null || strLongitude == null) {
+                messages.add message(code: "post.location.geo.invalid", strLatitude, strLongitude)
+            }
+            else{
+                latitude = Double.parseDouble(strLatitude)
+                longitude = Double.parseDouble(strLongitude)
+
+                if(latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180){
+                    messages.add message(code: "post.location.geo.invalid", strLatitude, strLongitude)
+                }
+            }
+
+            if(!locationText){
+                messages.add message(code: "post.location.empty")
             }
 
             def tag = commonService.getTag(tagName, messages, Constants.WARN_IF_NOT_FOUND)
@@ -206,8 +241,6 @@ class PostController {
                 if (user) {
                     def post = new Post()
                     post.text = text
-                    post.latitude = latitude
-                    post.longitude = longitude
                     post.tag = tag
                     if (tag.duration == Constants.DURATION_NA) {
                         post.startDate = commonService.stringToDate(strStartDate)
@@ -216,22 +249,29 @@ class PostController {
 
                     post.author = user
 
+                    def location = new Location()
+                    location.latitude = latitude
+                    location.longitude = longitude
+                    location.text = locationText
+
+                    post.location = location
+
                     if (imageUrls) {
-                        imageUrls.each {
+                        imageUrls.eachWithIndex { it, i ->
                             def image = new Image()
                             image.imageUrl = it
+                            image.thumbnailUrl = thumbnailUrls[i]
 
                             post.addToImages(image)
                         }
                     }
 
                     commonService.saveObject(post, result, messages, true)
-                } else {
-                    messages.add message(code: "user.not.found", args: [SecurityContextHolder.context.authentication.principal])
                 }
             }
         }
         catch (Exception e) {
+            e.printStackTrace()
             messages.add e.toString()
         }
 

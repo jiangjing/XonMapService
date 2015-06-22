@@ -17,28 +17,25 @@ class UserController {
         def input = request.JSON
         def email = input.email
         def password = input.password
+        def externalUserSource = input.userSource
+        def externalUserId = input.userId
+        def externalAccessToken = input.accessToken
         def token = input.token
         try {
             def user
             if (token) {
                 user = commonService.validateAccountByToken(email, token, messages)
-            } else {
+            } else if(password) {
                 user = commonService.validateAccount(email, password, messages)
+            } else{
+                user = commonService.validateExternalAccount(externalUserSource, externalUserId, externalAccessToken, messages)
             }
 
             if (user) {
-                if (!token) {
-                    token = commonService.newToken(email)
-                }
-
-                if (token != user.token) {
-                    user.token = token
-                }
-
                 user.lastLoginDate = new Date()
                 commonService.saveObject(user, result, messages, true)
 
-                result.token = token
+                result.token = user.token
             }
         }
         catch (Exception e) {
@@ -64,6 +61,32 @@ class UserController {
         def email = input.email
         try {
             def user = commonService.getUser(email, messages, Constants.WARN_IF_NOT_FOUND)
+            if (user) {
+                result.putAll user.mapI
+            }
+        }
+        catch (Exception e) {
+            messages.add e.toString()
+        }
+
+        if (messages) {
+            result.status = Constants.STATUS_FAIL
+            result.messages = messages
+        } else {
+            result.status = Constants.STATUS_SUCCESSFUL
+        }
+
+        respond result
+    }
+
+    def getByNickname() {
+        def result = new JSONObject()
+        def messages = []
+
+        def input = request.JSON
+        def nickname = input.nickname
+        try {
+            def user = commonService.getUserByNickname(nickname, messages, Constants.WARN_IF_NOT_FOUND)
             if (user) {
                 result.putAll user.mapI
             }
@@ -179,7 +202,8 @@ class UserController {
         def input = request.JSON
         def email = input.email
         def password = input.password
-        def externalUserId = input.externalUserId
+        def externalUserId = input.userId
+        def externalAccessToken = input.accessToken
         def nickname = input.nickname
         def userSource = input.userSource
         try {
@@ -206,32 +230,53 @@ class UserController {
                     if (!externalUserId) {
                         messages.add message(code: "user.external.id.empty")
                     }
+
+                    if(!externalAccessToken){
+                        messages.add message(code: "user.external.accesstoken.empty")
+                    }
                 }
             }
 
             if (!messages) {
-                def user = commonService.getUser(email, messages, Constants.WARN_IF_FOUND);
+                def user = commonService.getUser(email, messages, Constants.WARN_IF_FOUND)
                 if (!user) {
-                    def role = commonService.getRole(Constants.ROLE_USER, messages, Constants.WARN_IF_NOT_FOUND)
-                    if (role) {
-                        user = new User();
-                        user.email = email;
-                        if (!password) {
-                            password = commonService.randomPassword()
-                        }
-                        user.password = password
-                        user.nickname = nickname;
-                        user.userSource = userSource
-                        def token = commonService.newToken(email)
-                        user.token = token
-                        if (userSource != Constants.USER_SOURCE_INLINE) {
-                            user.externalUserId = externalUserId
-                        }
-                        user.role = role
+                    if(userSource == Constants.USER_SOURCE_FACEBOOK){
+                        commonService.validateFacebookAccount(externalUserId, externalAccessToken, messages)
+                    }
 
-                        commonService.saveObject(user, result, messages, true);
+                    if(!messages) {
+                        if (userSource == Constants.USER_SOURCE_INLINE) {
+                            user = commonService.getUserByNickname(nickname, messages, Constants.WARN_IF_FOUND)
+                        } else {
+                            user = commonService.getUserByNickname(nickname, messages, Constants.WARN_MUTE)
+                            if (userSource == Constants.USER_SOURCE_FACEBOOK) {
+                                nickname += Constants.FACEBOOK_USER_SURFIX
+                            }
+                        }
 
-                        result.token = token
+                        if (userSource != Constants.USER_SOURCE_INLINE || !user) {
+                            def role = commonService.getRole(Constants.ROLE_USER, messages, Constants.WARN_IF_NOT_FOUND)
+                            if (role) {
+                                user = new User();
+                                user.email = email;
+                                if (!password) {
+                                    password = commonService.randomPassword()
+                                }
+                                user.password = password
+                                user.nickname = nickname;
+                                user.userSource = userSource
+                                def token = commonService.newToken(email)
+                                user.token = token
+                                if (userSource != Constants.USER_SOURCE_INLINE) {
+                                    user.externalUserId = externalUserId
+                                }
+                                user.role = role
+
+                                commonService.saveObject(user, result, messages, true);
+
+                                result.token = token
+                            }
+                        }
                     }
                 }
             }
@@ -275,17 +320,22 @@ class UserController {
 
                     if (!messages) {
                         def updated = false
-                        if (newPassword) {
-                            if (user.password != commonService.encodeText(newPassword)) {
-                                user.password = newPassword
-                                updated = true
+                        if (newNickname) {
+                            if (user.nickname != newNickname) {
+                                def existingUser = commonService.getUserByNickname(newNickname, messages, Constants.WARN_IF_FOUND)
+                                if(!existingUser) {
+                                    user.nickname = newNickname
+                                    updated = true
+                                }
                             }
                         }
 
-                        if (newNickname) {
-                            if (user.nickname != newNickname) {
-                                user.nickname = newNickname
-                                updated = true
+                        if(!messages) {
+                            if (newPassword) {
+                                if (user.password != commonService.encodeText(newPassword)) {
+                                    user.password = newPassword
+                                    updated = true
+                                }
                             }
                         }
 

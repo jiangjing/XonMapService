@@ -20,7 +20,7 @@ class User {
     static constraints = {
         email blank : false, email: true, nullable: false, unique: true
         password blank: false, nullable: false
-        nickname blank: false, nullable: false
+        nickname blank: false, nullable: false, unique: true
         token nullable : true
         externalUserId nullable : true
         userSource blank: false, nullable: false

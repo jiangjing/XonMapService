@@ -16,6 +16,7 @@ class Constants {
     public def static final WARN_MUTE = 2
     public def static final USER_SOURCE_INLINE = 0
     public def static final USER_SOURCE_FACEBOOK = 1
+    public def static final FACEBOOK_USER_SURFIX = "_Facebook"
     public def static final EARTH_RADIUS = 6371
     public def static final DURATION_NA = 0
 }

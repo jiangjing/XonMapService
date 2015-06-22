@@ -8,8 +8,7 @@ class Post {
     Date dateCreated
     Date startDate
     Date endDate
-    double latitude
-    double longitude
+    Location location
     Tag tag
 
     static hasMany = [likers : User, comments : Comment, images : Image]
@@ -47,8 +46,9 @@ class Post {
         map.dateCreated = commonService.dateToString(dateCreated)
         map.startDate = commonService.dateToString(startDate)
         map.endDate = commonService.dateToString(endDate)
-        map.latitude = latitude
-        map.longitude = longitude
+        map.latitude = location.latitude
+        map.longitude = location.longitude
+        map.location = location.text
         map.tagName = tag.name
         map.authorEmail = author.email
         map.images = images? images*.map : []
@@ -62,8 +62,9 @@ class Post {
         def map = [:]
         map.id = id
         map.text = text
-        map.latitude = latitude
-        map.longitude = longitude
+        map.latitude = location.latitude
+        map.longitude = location.longitude
+        map.location = location.text
         map.tagName = tag.name
         map.authorEmail = author.email
         map.images = images? images*.map : []
